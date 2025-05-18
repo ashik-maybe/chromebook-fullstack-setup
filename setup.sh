@@ -1,9 +1,9 @@
-#!/bin/bash
-# Master script to run all setup scripts sequentially
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -e
+echo "[*] Starting Chromebook Fullstack Setup..."
 
-SCRIPTS=(
+scripts=(
   "01-base-packages.sh"
   "02-nodejs-setup.sh"
   "03-dotnet-sdk-setup.sh"
@@ -11,13 +11,16 @@ SCRIPTS=(
   "05-yarn-pm2-nodemon.sh"
   "06-coolify-setup.sh"
   "07-performance-tweaks.sh"
-  "bash 08-devtools.sh"
+  "08-devtools.sh"
 )
 
-for script in "${SCRIPTS[@]}"; do
-  echo "Running $script..."
-  bash "$script"
-  echo "$script completed."
+for script in "${scripts[@]}"; do
+  echo -e "\n[•] Running $script..."
+  if bash "$script"; then
+    echo "[✓] $script completed successfully."
+  else
+    echo "[✗] $script failed. Skipping and moving on..." >&2
+  fi
 done
 
-echo "All setup scripts executed successfully!"
+echo -e "\n[✅] Chromebook Fullstack Setup Complete!"
